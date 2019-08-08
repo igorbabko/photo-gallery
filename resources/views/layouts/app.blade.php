@@ -18,6 +18,12 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+
+    <script>
+        window.Gallery = <?= json_encode([
+            'profile' => auth()->user()
+        ]) ?>
+    </script>
 </head>
 <body>
     <div id="app">

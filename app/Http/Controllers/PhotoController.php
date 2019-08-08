@@ -14,21 +14,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        return view('home');
-
-        $photos = Photo::get();
-
-        return view('photos.index', compact('photos'));
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
+        return Photo::get();
     }
 
     /**
@@ -39,51 +25,21 @@ class PhotoController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $photos = $this->save($request->image);
+
+        return response()->json($photos, 201);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Photo $photo)
+    protected function save($images)
     {
-        //
-    }
+        return collect($images)->map(function ($image) {
+            $filename = microtime() . '.' . $image->getClientOriginalExtension();
+            $image->move(public_path('images'), $filename);
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Photo $photo)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, Photo $photo)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(Photo $photo)
-    {
-        //
+            return Photo::create([
+                'user_id' => auth()->id(),
+                'path' => $filename
+            ]);
+        });
     }
 }
