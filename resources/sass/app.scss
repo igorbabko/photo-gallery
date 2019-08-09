@@ -6,3 +6,11 @@
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
+
+a:not([href]):not([tabindex]) {
+    &:hover {
+        color: white;
+    }
+
+    color: white;
+}
