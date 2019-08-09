@@ -1888,6 +1888,12 @@ __webpack_require__.r(__webpack_exports__);
     axios.get('/photos').then(function (response) {
       _this.photos = response.data;
     });
+  },
+  methods: {
+    updateGallery: function updateGallery(photos) {
+      this.photos = photos.concat(this.photos);
+      return this;
+    }
   }
 });
 
@@ -1921,6 +1927,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['photos'],
@@ -1935,14 +1950,16 @@ __webpack_require__.r(__webpack_exports__);
   computed: {
     images: function images() {
       return this.photos && this.photos.map(function (photo) {
-        return photo.path;
-      }).slice(0, 10);
+        return window.Gallery.url + photo.path;
+      });
     },
-    style: function style(image) {
-      return {
-        backgroundImage: 'url(' + image + ')',
-        width: '300px',
-        height: '200px'
+    style: function style() {
+      return function (path) {
+        return {
+          backgroundImage: "url(".concat(path, ")"),
+          width: '300px',
+          height: '200px'
+        };
       };
     }
   }
@@ -1975,6 +1992,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -1994,6 +2012,12 @@ __webpack_require__.r(__webpack_exports__);
         }
       }
     };
+  },
+  methods: {
+    uploaded: function uploaded(files, photos) {
+      this.$emit('uploaded', photos);
+      return this;
+    }
   }
 });
 
@@ -8758,7 +8782,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, ".image[data-v-5761a7b7] {\n  float: left;\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n  border: 1px solid #ebebeb;\n  margin: 5px;\n}", ""]);
+exports.push([module.i, ".image[data-v-5761a7b7] {\n  float: left;\n  background-size: cover;\n  background-repeat: no-repeat;\n  background-position: center center;\n  border: 1px solid #ebebeb;\n  margin: 5px;\n  position: relative;\n}\na[download][data-v-5761a7b7] {\n  position: absolute;\n  right: 0;\n  bottom: 0;\n  margin: 5px;\n}", ""]);
 
 // exports
 
@@ -40637,7 +40661,12 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "container" }, [
     _c("div", { staticClass: "row" }, [
-      _c("div", { staticClass: "col" }, [_c("uploader")], 1)
+      _c(
+        "div",
+        { staticClass: "col" },
+        [_c("uploader", { on: { uploaded: _vm.updateGallery } })],
+        1
+      )
     ]),
     _vm._v(" "),
     _c("div", { staticClass: "row" }, [
@@ -40686,16 +40715,34 @@ var render = function() {
       }),
       _vm._v(" "),
       _vm._l(_vm.images, function(image, imageIndex) {
-        return _c("div", {
-          key: imageIndex,
-          staticClass: "image",
-          style: _vm.style,
-          on: {
-            click: function($event) {
-              _vm.index = imageIndex
+        return _c(
+          "div",
+          {
+            key: imageIndex,
+            staticClass: "image",
+            style: _vm.style(image),
+            on: {
+              click: function($event) {
+                _vm.index = imageIndex
+              }
             }
-          }
-        })
+          },
+          [
+            _c(
+              "a",
+              {
+                staticClass: "btn btn-success",
+                attrs: { href: image, download: "" },
+                on: {
+                  click: function($event) {
+                    $event.stopPropagation()
+                  }
+                }
+              },
+              [_c("i", { staticClass: "fas fa-download" })]
+            )
+          ]
+        )
       })
     ],
     2
@@ -40730,7 +40777,8 @@ var render = function() {
       [
         _c("vue-dropzone", {
           ref: "myVueDropzone",
-          attrs: { id: "dropzone", options: _vm.dropzoneOptions }
+          attrs: { id: "dropzone", options: _vm.dropzoneOptions },
+          on: { "vdropzone-success-multiple": _vm.uploaded }
         })
       ],
       1

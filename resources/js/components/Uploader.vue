@@ -5,6 +5,7 @@
         ref="myVueDropzone"
         id="dropzone"
         :options="dropzoneOptions"
+        @vdropzone-success-multiple="uploaded"
       />
     </div>
   </div>
@@ -32,6 +33,14 @@
             formData.append('_token', csrfToken);
           }
         }
+      }
+    },
+
+    methods: {
+      uploaded(files, photos) {
+        this.$emit('uploaded', photos)
+
+        return this
       }
     }
   }

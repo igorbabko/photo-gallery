@@ -14,7 +14,7 @@ class PhotoController extends Controller
      */
     public function index()
     {
-        return Photo::get();
+        return Photo::latest()->get();
     }
 
     /**
@@ -33,12 +33,14 @@ class PhotoController extends Controller
     protected function save($images)
     {
         return collect($images)->map(function ($image) {
-            $filename = microtime() . '.' . $image->getClientOriginalExtension();
+            $filename = str_replace(' ', '', microtime())
+                . '.' . $image->getClientOriginalExtension();
+
             $image->move(public_path('images'), $filename);
 
             return Photo::create([
                 'user_id' => auth()->id(),
-                'path' => $filename
+                'path' => '/images/' . $filename
             ]);
         });
     }

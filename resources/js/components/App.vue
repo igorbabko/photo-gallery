@@ -2,7 +2,7 @@
     <div class="container">
       <div class="row">
         <div class="col">
-          <uploader />
+          <uploader @uploaded="updateGallery" />
         </div>
       </div>
       <div class="row">
@@ -26,6 +26,14 @@ export default {
     axios.get('/photos').then(response => {
       this.photos = response.data
     })
+  },
+
+  methods: {
+    updateGallery(photos) {
+      this.photos = photos.concat(this.photos)
+
+      return this
+    }
   }
 }
 </script>
