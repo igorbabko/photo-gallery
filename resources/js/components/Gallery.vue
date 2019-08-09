@@ -13,6 +13,7 @@
       :style="style(image)"
     >
       <a
+        v-if="profile"
         :href="image"
         download
         @click.stop
@@ -32,6 +33,7 @@
 
     data() {
       return {
+        profile: window.Gallery.profile,
         index: null
       }
     },
@@ -42,7 +44,8 @@
 
     computed: {
       images() {
-        return this.photos && this.photos.map(photo => window.Gallery.url + photo.path)
+        return this.photos
+          && this.photos.map(photo => window.Gallery.url + photo.path)
       },
 
       style() {

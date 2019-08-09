@@ -10,11 +10,15 @@ class PhotoController extends Controller
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Photo::latest()->get();
+        return Photo::latest()
+            ->offset($request->input('offset', 0))
+            ->limit($request->input('limit', 10))
+            ->get();
     }
 
     /**

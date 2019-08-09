@@ -1,14 +1,11 @@
 <template>
-  <div class="row">
-    <div class="col mb-4">
-      <vue-dropzone
-        ref="myVueDropzone"
-        id="dropzone"
-        :options="dropzoneOptions"
-        @vdropzone-success-multiple="uploaded"
-      />
-    </div>
-  </div>
+  <vue-dropzone
+    ref="myVueDropzone"
+    id="dropzone"
+    :options="dropzoneOptions"
+    @vdropzone-success-multiple="uploaded"
+    class="mb-4"
+  />
 </template>
 
 <script>
@@ -27,10 +24,12 @@
           acceptedFiles: '.jpeg,.jpg,.png,.gif',
           uploadMultiple: true,
           paramName: 'image',
+          dictDefaultMessage: 'Drop images here, or click to select an image to upload.',
           sending (file, xhr, formData) {
-            const csrfToken = document.head.querySelector('meta[name="csrf-token"]').content
+            const csrfToken
+              = document.head.querySelector('meta[name="csrf-token"]').content
 
-            formData.append('_token', csrfToken);
+            formData.append('_token', csrfToken)
           }
         }
       }
